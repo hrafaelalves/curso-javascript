@@ -165,16 +165,15 @@ class UserController{
     }
 
     selectAll(){
-        let users = User.getUsersStorage();
-
-        users.forEach(dataUser => {
-            let user = new User();
-
-            user.loadFromJSON(dataUser);
-
-            this.addLine(user);
+        HttpRequest.get('/users').then(data => {
+            data.users.forEach(dataUser => {
+                let user = new User();
+    
+                user.loadFromJSON(dataUser);
+    
+                this.addLine(user);
+            });
         });
-        
     }
 
     addLine(dataUser){
