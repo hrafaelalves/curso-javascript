@@ -44,17 +44,18 @@ class UserController{
 
                     user.loadFromJSON(result);
 
-                    user.save();
+                    user.save().then(user => {
+                        this.getTr(user, tr);
 
-                    this.getTr(user, tr);
-
-                    this.updateCount();
-
-                    this.formUpdateEl.reset();
-
-                    btn.disabled = false;
-
-                    this.showPanelCreate();
+                        this.updateCount();
+    
+                        this.formUpdateEl.reset();
+    
+                        btn.disabled = false;
+    
+                        this.showPanelCreate();
+                    });
+                   
                 },
                 (e) => {
                     console.error(e)
@@ -79,13 +80,13 @@ class UserController{
                 (content) => {
                     values.photo = content;
                     
-                    values.save();
+                    values.save().then(user => {
+                        this.addLine(user);
 
-                    this.addLine(values);
-
-                    this.formEl.reset();
-
-                    btn.disabled = false;
+                        this.formEl.reset();
+    
+                        btn.disabled = false;
+                    });
                 },
                 (e) => {
                     console.error(e)
@@ -165,7 +166,7 @@ class UserController{
     }
 
     selectAll(){
-        HttpRequest.get('/users').then(data => {
+        User.getUsersStorage().then(data => {
             data.users.forEach(dataUser => {
                 let user = new User();
     
@@ -214,12 +215,13 @@ class UserController{
 
                 user.loadFromJSON(JSON.parse(tr.dataset.user));
 
-                user.remove();
+                user.remove().then(data => {
 
-                tr.remove();
+                    tr.remove();
 
-                this.updateCount();
-            }
+                    this.updateCount();
+    
+                });            }
         });
 
         tr.querySelector('.btn-edit').addEventListener("click", event => {
